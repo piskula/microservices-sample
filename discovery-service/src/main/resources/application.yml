@@ -1,0 +1,12 @@
+server:
+  port: 8761
+spring:
+  application:
+    name: "discovery-service"
+eureka:
+  client:
+    # this cache should be refreshed every 30 seconds
+    # if set to false, we are asking eureka each time "where the microservice is"
+    fetch-registry: false
+    # do not register itself
+    register-with-eureka: false
