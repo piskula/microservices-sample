@@ -1,11 +1,19 @@
 package sk.momosi.services.employeeserver.controller
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import sk.momosi.dto.employee.EmployeeDTO
+import sk.momosi.services.employeeserver.clients.DataClient
 import sk.momosi.servicesinterfaces.EmployeeServerApi
+import java.util.*
 
 @RestController
 class EmployeeServerController: EmployeeServerApi {
+
+    @Autowired
+    lateinit var dataClient: DataClient
 
     val listOfEmployees: Map<Long, String> = mapOf(
             1L to "Michael Jackson",
@@ -15,20 +23,29 @@ class EmployeeServerController: EmployeeServerApi {
             5L to "Stevie Wonder"
     )
 
-    override fun addEmployee(employee: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun addEmployee(employee: String): ResponseEntity<Any> {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(dataClient.getCustomErrorMessage())
     }
 
-    override fun getEmployee(id: Long): ResponseEntity<String> {
+    override fun getEmployee(id: Long): ResponseEntity<EmployeeDTO> {
         val result = listOfEmployees.get(id % size() + 1)
         if (result == null) {
-            return ResponseEntity.badRequest().body("Cannot find Employee with id $id")
+            return ResponseEntity.badRequest().build()
         }
-        return ResponseEntity.ok(result)
+        return ResponseEntity.ok(
+                EmployeeDTO(result, dataClient.getDateJvm(), UUID.randomUUID()))
     }
 
-    override fun getEmployees(): ResponseEntity<List<String>> {
-        return ResponseEntity.ok(listOfEmployees.map { e -> "${e.key} -> ${e.value}" })
+    override fun getEmployees(): ResponseEntity<List<EmployeeDTO>> {
+        return ResponseEntity.ok(
+                listOfEmployees.map { e ->
+                    EmployeeDTO(
+                            "${e.key} -> ${e.value}",
+                            dataClient.getDateJvm(),
+                            UUID.randomUUID())
+                })
     }
 
     private fun size(): Int {

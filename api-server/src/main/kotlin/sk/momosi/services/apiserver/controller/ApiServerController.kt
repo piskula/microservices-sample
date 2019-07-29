@@ -14,11 +14,11 @@ class ApiServerController: ApiServerApi {
 
 
     override fun getTestConfig(): String? {
-        return dataServer.getJvm() ?: "no-response"
+        return dataServer.getCustomErrorMessage() ?: "no-response"
     }
 
     override fun getDate(): LocalDateTime {
-        return dataServer.getDateJvm()
+        return dataServer.getDateTimeJvm()
     }
 
     override fun getTimestamp(): Long {
