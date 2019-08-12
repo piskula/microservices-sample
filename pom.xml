@@ -27,7 +27,6 @@
 		<module>api-server</module>
 		<module>data-server</module>
 		<module>employee-server</module>
-		<!--<module>interface-module</module>-->
     </modules>
 
 	<dependencyManagement>

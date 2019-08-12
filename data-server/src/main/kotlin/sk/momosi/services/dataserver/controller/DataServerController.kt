@@ -9,11 +9,11 @@ import java.time.*
 class DataServerController: DataServerApi {
 
     // configuration property value
-    @Value("\${message}")
-    val message: String? = null
+    @Value("\${error-message}")
+    val messageErr: String? = null
 
     override fun getCustomErrorMessage(): String? {
-        return message ?: ""
+        return messageErr ?: ""
     }
 
     override fun getLongJvm(): Long {

@@ -1,0 +1,45 @@
+version: '3'
+services:
+  discovery:
+    image: sk.momosi.services/discovery-service:1.0
+    container_name: discovery-service
+    hostname: sk.momosi
+    ports:
+      - 8761:8761
+  config:
+    image: sk.momosi.services/config-server:1.0
+    container_name: config-server
+    hostname: sk.momosi
+    depends_on:
+      - discovery
+    build: .
+    command: ["-c", "/opt/wait-for.sh discovery:8761 && java -jar app.jar"]
+    entrypoint: ["/bin/sh"]
+    ports:
+      - 8888:8888
+  data:
+    image: sk.momosi.services/data-server:1.0
+    container_name: data-server
+    hostname: sk.momosi
+    depends_on:
+      - discovery
+      - config
+#    restart: on-failure
+    build: .
+    command: ["-c", "/opt/wait-for.sh config:8888 && java -jar app.jar"]
+    entrypoint: ["/bin/sh"]
+    ports:
+      - 8100:8100
+  employee:
+    image: sk.momosi.services/employee-server:1.0
+    container_name: employee-server
+    hostname: sk.momosi
+    depends_on:
+      - discovery
+      - config
+      - data
+    build: .
+    command: ["-c", "/opt/wait-for.sh data:8100 && java -jar app.jar"]
+    entrypoint: ["/bin/sh"]
+    ports:
+      - 8300:8300
