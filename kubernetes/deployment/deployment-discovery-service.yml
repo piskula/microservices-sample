@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discovery-service-deployment
+  labels:
+    app: employee-database
+
+spec:
+  replicas: 1
+
+  template:
+    metadata:
+      name: discovery-service-pod
+      labels:
+        name: discovery-service-pod
+        app: employee-database
+
+    spec:
+      containers:
+        - name: discovery-service
+          image: eu.gcr.io/stellar-spark-248921/discovery-service:1.1
+          ports:
+            - containerPort: 8761
+
+  selector:
+    matchLabels:
+      name: discovery-service-pod
+      app: employee-database

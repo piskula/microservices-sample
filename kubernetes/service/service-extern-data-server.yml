@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-server
+  labels:
+    name: data-server
+    app: employee-database
+
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8100
+      targetPort: 8100
+  selector:
+    name: data-server-pod
+    app: employee-database

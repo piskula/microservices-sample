@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-server-deployment
+  labels:
+    app: employee-database
+
+spec:
+  replicas: 1
+
+  template:
+    metadata:
+      name: data-server-pod
+      labels:
+        name: data-server-pod
+        app: employee-database
+
+    spec:
+      containers:
+        - name: data-server
+          image: eu.gcr.io/stellar-spark-248921/data-server:1.9
+          ports:
+            - containerPort: 8100
+
+  selector:
+    matchLabels:
+      name: data-server-pod
+      app: employee-database
