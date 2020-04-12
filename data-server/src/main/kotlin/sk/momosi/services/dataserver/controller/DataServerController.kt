@@ -4,19 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import sk.momosi.services.dataserver.dto.SensorDTO
-import sk.momosi.services.dataserver.dto.SensorValueCreateDTO
-import sk.momosi.services.dataserver.dto.SensorValueDTO
+import sk.momosi.dto.data.SensorDTO
+import sk.momosi.dto.data.SensorValueCreateDTO
+import sk.momosi.dto.data.SensorValueDTO
+import sk.momosi.services.dataserver.dto.SensorDTOImpl
+import sk.momosi.services.dataserver.dto.SensorValueDTOImpl
+import sk.momosi.services.dataserver.dto.util.DtoConversionUtil
 import sk.momosi.services.dataserver.repository.SensorRepository
 import sk.momosi.services.dataserver.repository.SensorValueRepository
 import sk.momosi.servicesinterfaces.DataServerApi
 import java.time.*
-import javax.validation.Valid
 
 @RestController
 class DataServerController @Autowired constructor(
@@ -54,31 +52,28 @@ class DataServerController @Autowired constructor(
         return ZonedDateTime.now()
     }
 
-    @GetMapping("/lastvalueforsensor")
-    fun getLastValueForSensor(@RequestParam sensor: Long): ResponseEntity<SensorValueDTO> {
+    override fun getLastValueForSensor(sensor: Long): ResponseEntity<SensorValueDTO> {
         val result = sensorValueRepo.findBySensorIdOrderByTimestampDesc(sensor, FIRST_RESULT)
         if (result.isEmpty) {
             return ResponseEntity.notFound().build()
         }
-        return ResponseEntity.ok(SensorValueDTO.getDtoFrom(result.content.get(0)))
+        return ResponseEntity.ok(SensorValueDTOImpl.getDtoFrom(result.content.get(0)))
     }
 
-    @GetMapping("/sensors")
-    fun getSensors(): Collection<SensorDTO> {
-        return SensorDTO.getDtoFrom(sensorRepo.findAll())
+    override fun getSensors(): Collection<SensorDTO> {
+        return SensorDTOImpl.getDtoFrom(sensorRepo.findAll())
     }
 
-
-    @PostMapping("/sensorvalue")
-    fun postNewSensorValue(@Valid @RequestBody sensorValue: SensorValueCreateDTO): ResponseEntity<SensorValueDTO> {
+    override fun postNewSensorValue(sensorValue: SensorValueCreateDTO): ResponseEntity<SensorValueDTO> {
         if (sensorValue.timestamp == null) {
             sensorValue.timestamp = LocalDateTime.now()
         }
 
+        val value = DtoConversionUtil.toEntity(sensorValue)
         try {
             return ResponseEntity.ok(
-                    SensorValueDTO.getDtoFrom(
-                            sensorValueRepo.save(sensorValue.toEntity())))
+                    SensorValueDTOImpl.getDtoFrom(
+                            sensorValueRepo.save(value)))
         } catch (e: Exception) {
             return ResponseEntity.unprocessableEntity().build()
         }
