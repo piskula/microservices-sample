@@ -7,7 +7,7 @@ This application is written in *Kotlin* language. It uses multiple *Spring Boot 
 
 - **Discovery service** (port 8761), responsible for making one microservice visible to others (technology used: Spring Eureka and Feign clients)
 - **Config service** (port 8888), holds configuration properties for other services
-- **Data service** (port 8100), for now returning Java8 time dates and times
+- **[Data service](data-server)** (port 8100), for now returning Java8 time dates and times
 - **Employee service** (port 8300), for now returning mocked employees with date from Data service (Feign client)
 
 ### How can you start that

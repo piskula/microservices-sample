@@ -21,7 +21,8 @@ spring:
   datasource:
     initialization-mode: never
     continue-on-error: false
-    schema: classpath:/temp_sql_scripts/schema.sql
+    hikari:
+      schema: sensor-data
     url: jdbc:postgresql://localhost:5432/postgres
     password: postgres
     username: postgres

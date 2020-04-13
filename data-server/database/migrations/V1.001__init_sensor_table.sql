@@ -1,11 +1,11 @@
-CREATE TABLE sensor
+CREATE TABLE IF NOT EXISTS sensor
 (
     id   SERIAL       NOT NULL,
     name VARCHAR(100) NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE sensor_value
+CREATE TABLE IF NOT EXISTS sensor_value
 (
     id        SERIAL                      NOT NULL,
     sensor_id SERIAL                      NOT NULL REFERENCES sensor (id),
