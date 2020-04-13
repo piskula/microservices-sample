@@ -1,0 +1,36 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout interfaces repository
+        uses: actions/checkout@v2
+        with:
+          repository: piskula/microservices-interface-shared
+          path: microservices-interface-shared
+
+      - name: build library with interfaces
+        run: |
+          cd microservices-interface-shared
+          ./gradlew publishToMavenLocal
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: checkout microservices (project itself)
+        uses: actions/checkout@v2
+
+      - name: Clean maven build of microservices
+        run: |
+          pwd
+          echo OK
+          mvn clean install
