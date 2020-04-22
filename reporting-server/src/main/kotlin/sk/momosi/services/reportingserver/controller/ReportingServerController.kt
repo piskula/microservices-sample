@@ -1,19 +1,24 @@
-package sk.momosi.services.employeeserver.controller
+package sk.momosi.services.reportingserver.controller
 
-import org.springframework.beans.factory.annotation.Autowired
+import org.apache.pdfbox.pdmodel.PDDocument
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import sk.momosi.dto.employee.EmployeeDTO
-import sk.momosi.services.employeeserver.clients.DataClient
-import sk.momosi.servicesinterfaces.EmployeeServerApi
+import sk.momosi.services.Constants
+import sk.momosi.services.reportingserver.clients.DataClient
+import sk.momosi.services.reportingserver.service.ReportService
+import sk.momosi.servicesinterfaces.ReportingServerApi
 import java.util.*
+import javax.servlet.http.HttpServletResponse
 
 @RestController
-class EmployeeServerController: EmployeeServerApi {
-
-    @Autowired
-    lateinit var dataClient: DataClient
+class ReportingServerController(
+        private val dataClient: DataClient, // this should of course not be here but in service, WIP
+        private val reportService: ReportService
+): ReportingServerApi {
 
     val listOfEmployees: Map<Long, String> = mapOf(
             1L to "Michael Jackson",
@@ -46,6 +51,22 @@ class EmployeeServerController: EmployeeServerApi {
                             dataClient.getDateJvm(),
                             UUID.randomUUID())
                 })
+    }
+
+    override fun getReport(response: HttpServletResponse): StreamingResponseBody {
+        return createPdfResponse(response, reportService.getReport())
+    }
+
+    // private functions
+
+    private fun createPdfResponse(response: HttpServletResponse, document: PDDocument): StreamingResponseBody {
+        response.contentType = Constants.MEDIA_PDF
+        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=export.pdf")
+
+        return StreamingResponseBody {
+            document.save(it)
+            document.close()
+        }
     }
 
     private fun size(): Int {

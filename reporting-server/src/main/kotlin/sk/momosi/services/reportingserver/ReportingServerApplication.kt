@@ -1,4 +1,4 @@
-package sk.momosi.services.employeeserver
+package sk.momosi.services.reportingserver
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -8,8 +8,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
-class EmployeeServerApplication
+class ReportingServerApplication
 
 fun main(args: Array<String>) {
-    runApplication<EmployeeServerApplication>(*args)
+    runApplication<ReportingServerApplication>(*args)
 }

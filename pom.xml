@@ -28,7 +28,7 @@
         <module>discovery-service</module>
         <module>api-server</module>
         <module>data-server</module>
-        <module>employee-server</module>
+        <module>reporting-server</module>
     </modules>
 
     <dependencyManagement>

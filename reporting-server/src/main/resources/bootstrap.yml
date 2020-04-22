@@ -1,6 +1,6 @@
 spring:
   application:
-    name: employee-server
+    name: reporting-server
   cloud:
     config:
 #      fail-fast: true
